@@ -5,6 +5,7 @@ import morgan from "morgan";
 
 import healthRoutes from "./routes/healthRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 
@@ -14,8 +15,9 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
-// API Routes
+// API routes
 app.use("/api", healthRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/auth", authRoutes);
 
 export default app;
