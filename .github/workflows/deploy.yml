@@ -1,4 +1,3 @@
-
 name: MATRIXPC Backend Deploy
 
 on:
@@ -36,17 +35,14 @@ jobs:
           cd /home/flopp1k/MatrixPC_BackEnd
 
           npm ci
-
           npx prisma generate --config prisma7.config.ts
-
           npx prisma migrate deploy --config prisma7.config.ts
+          /usr/local/bin/pm2 restart matrixpc-backend --update-env
 
-          /usr/local/bin/pm2 restart matrixpc-backend
-
-                - name: Health check
-          run: |
+      - name: Health check
+        run: |
           for attempt in {1..15}; do
-            if curl --fail --silent --show-error http://127.0.0.1:5000/api/products > /dev/null; then
+            if curl --fail --silent http://127.0.0.1:5000/api/products > /dev/null; then
               echo "Backend is healthy!"
               exit 0
             fi
