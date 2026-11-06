@@ -1,0 +1,17 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+# Build results
+[Bb]in/
+[Oo]bj/
+# Visual Studio Code
+.vscode/
+# JetBrains Rider
+.idea/
+# Logs
+*.log
+# Test results
+TestResults/
