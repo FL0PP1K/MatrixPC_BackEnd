@@ -1,17 +1,20 @@
-# Visual Studio
+# Dependencies
+node_modules/
+# Environment variables
+.env
+.env.*
+!.env.example
+# Build and tests
+dist/
+coverage/
+TestResults/
+# IDE
 .vs/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-# Build results
-[Bb]in/
-[Oo]bj/
-# Visual Studio Code
 .vscode/
-# JetBrains Rider
 .idea/
 # Logs
 *.log
-# Test results
-TestResults/
+npm-debug.log*
+# OS
+.DS_Store
+Thumbs.db
