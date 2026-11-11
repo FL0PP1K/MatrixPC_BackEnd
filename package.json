@@ -7,6 +7,10 @@
   "scripts": {
     "dev": "tsx watch server.js",
     "start": "tsx server.js",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "predev": "npm run db:generate",
+    "prestart": "npm run db:generate",
     "db:seed": "tsx prisma/seed.js"
   },
   "repository": {
@@ -38,3 +42,4 @@
     "prisma": "^7.10.1"
   }
 }
+
