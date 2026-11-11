@@ -61,3 +61,16 @@ model Product {
 
   @@index([categoryId])
 }
+
+
+model ContactInquiry {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  topic     String
+  message   String   @db.Text
+  consentAt DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
