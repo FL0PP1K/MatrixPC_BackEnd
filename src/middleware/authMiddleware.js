@@ -58,6 +58,7 @@ export const authenticateToken = async (req, res, next) => {
                 firstName: true,
                 lastName: true,
                 role: true,
+                phone: true,
                 createdAt: true,
             },
         });

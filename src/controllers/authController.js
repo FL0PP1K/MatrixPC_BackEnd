@@ -1,6 +1,7 @@
 import {
     registerUser,
     loginUser,
+    updateUserProfile,
 } from "../services/authService.js";
 
 // Реєстрація користувача
@@ -160,4 +161,33 @@ export const getMe = (req, res) => {
             user: req.user,
         },
     });
+};
+
+
+export const updateProfile = async (req, res) => {
+    const { firstName, lastName, email, phone } = req.body ?? {};
+    if ([firstName, lastName, email, phone].some((value) => typeof value !== "string")) {
+        return res.status(400).json({ success: false, message: "Заповніть ім’я, прізвище, email і телефон" });
+    }
+    const clean = [firstName.trim(), lastName.trim(), email.trim(), phone.trim()];
+    const [cleanFirst, cleanLast, cleanEmail, cleanPhone] = clean;
+    if (!cleanFirst || cleanFirst.length > 50 || !cleanLast || cleanLast.length > 50) {
+        return res.status(400).json({ success: false, message: "Ім’я та прізвище мають містити 1–50 символів" });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail) || cleanEmail.length > 254) {
+        return res.status(400).json({ success: false, message: "Вкажіть коректну електронну пошту" });
+    }
+    if (!/^[+()\d\s-]{7,24}$/.test(cleanPhone)) {
+        return res.status(400).json({ success: false, message: "Вкажіть коректний номер телефону" });
+    }
+    try {
+        const user = await updateUserProfile({ userId: req.user.id, firstName: cleanFirst, lastName: cleanLast, email: cleanEmail, phone: cleanPhone });
+        return res.json({ success: true, message: "Профіль оновлено", data: { user } });
+    } catch (error) {
+        if (error.statusCode === 409 || error.code === "P2002") {
+            return res.status(409).json({ success: false, message: "Ця електронна пошта вже використовується" });
+        }
+        console.error("Profile update error:", error);
+        return res.status(500).json({ success: false, message: "Не вдалося оновити профіль" });
+    }
 };
