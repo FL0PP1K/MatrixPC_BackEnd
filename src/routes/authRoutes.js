@@ -4,6 +4,7 @@ import {
     register,
     login,
     getMe,
+    updateProfile,
 } from "../controllers/authController.js";
 
 import {
@@ -20,5 +21,6 @@ router.post("/login", login);
 
 // GET /api/auth/me — захищений маршрут
 router.get("/me", authenticateToken, getMe);
+router.put("/me", authenticateToken, updateProfile);
 
 export default router;

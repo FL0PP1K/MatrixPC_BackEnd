@@ -29,6 +29,7 @@ const getSafeUser = (user) => ({
     firstName: user.firstName,
     lastName: user.lastName,
     role: user.role,
+    phone: user.phone ?? null,
     createdAt: user.createdAt,
 });
 
@@ -106,4 +107,27 @@ export const loginUser = async ({ email, password }) => {
         user: getSafeUser(user),
         token,
     };
+};
+
+
+export const updateUserProfile = async ({ userId, firstName, lastName, email, phone }) => {
+    const normalizedEmail = email.trim().toLowerCase();
+    const existing = await prisma.user.findFirst({
+        where: { email: normalizedEmail, NOT: { id: userId } },
+    });
+    if (existing) {
+        const error = new Error("Користувач із такою електронною поштою вже існує");
+        error.statusCode = 409;
+        throw error;
+    }
+    const user = await prisma.user.update({
+        where: { id: userId },
+        data: {
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            email: normalizedEmail,
+            phone: phone.trim(),
+        },
+    });
+    return getSafeUser(user);
 };
