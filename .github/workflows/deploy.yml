@@ -1,0 +1,55 @@
+name: MATRIXPC Backend Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, Linux, X64]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Deploy Backend
+        run: |
+          rsync -rlv --delete --no-perms --no-owner --no-group \
+            --exclude='.env' \
+            --exclude='node_modules/' \
+            --exclude='.git/' \
+            --exclude='uploads/' \
+            ./ /home/flopp1k/MatrixPC_BackEnd/
+
+          cd /home/flopp1k/MatrixPC_BackEnd
+
+          npm ci
+          npx prisma generate --config prisma7.config.ts
+          npx prisma migrate deploy --config prisma7.config.ts
+          /usr/local/bin/pm2 restart matrixpc-backend --update-env
+
+      - name: Health check
+        run: |
+          for attempt in {1..15}; do
+            if curl --fail --silent http://127.0.0.1:5000/api/products > /dev/null; then
+              echo "Backend is healthy!"
+              exit 0
+            fi
+
+            echo "Waiting for Backend... ($attempt/15)"
+            sleep 2
+          done
+
+          echo "Backend health check failed!"
+          exit 1
