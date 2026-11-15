@@ -16,7 +16,7 @@ export const getAllProducts = async () => {
     });
 };
 
-// Створення нового товару
+// Створення товару
 export const createProduct = async (data) => {
     return await prisma.product.create({
         data: {
@@ -32,6 +32,33 @@ export const createProduct = async (data) => {
         },
         include: {
             category: true,
+        },
+    });
+};
+
+// Редагування товару
+export const updateProduct = async (id, data) => {
+    return await prisma.product.update({
+        where: {
+            id,
+            isActive: true,
+        },
+        data,
+        include: {
+            category: true,
+        },
+    });
+};
+
+// Приховування товару з каталогу
+export const deleteProduct = async (id) => {
+    return await prisma.product.update({
+        where: {
+            id,
+            isActive: true,
+        },
+        data: {
+            isActive: false,
         },
     });
 };
