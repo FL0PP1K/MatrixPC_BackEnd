@@ -37,7 +37,15 @@ jobs:
           npm ci
           npx prisma generate --config prisma7.config.ts
           npx prisma migrate deploy --config prisma7.config.ts
-          /usr/local/bin/pm2 restart matrixpc-backend --update-env
+
+          export HOME=/home/flopp1k
+          export PM2_HOME=/home/flopp1k/.pm2
+          if /usr/local/bin/pm2 describe matrixpc-backend >/dev/null 2>&1; then
+            /usr/local/bin/pm2 restart matrixpc-backend --update-env
+          else
+            /usr/local/bin/pm2 start npm --name matrixpc-backend -- start
+          fi
+          /usr/local/bin/pm2 save
 
       - name: Health check
         run: |
