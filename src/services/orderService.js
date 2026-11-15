@@ -50,3 +50,25 @@ export async function createUserOrder(user, input) {
     });
   });
 }
+// Отримання всіх замовлень для адміністратора
+export async function listAllOrders() {
+  return prisma.order.findMany({
+      include: {
+          items: true,
+      },
+      orderBy: {
+          createdAt: "desc",
+      },
+  });
+}
+
+ // Зміна статусу замовлення
+ export async function updateOrderStatus(id, status) {
+  return prisma.order.update({
+      where: { id },
+      data: { status },
+      include: {
+          items: true,
+      },
+  });
+}
