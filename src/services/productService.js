@@ -24,6 +24,7 @@ export const createProduct = async (data) => {
             slug: data.slug,
             sku: data.sku,
             description: data.description || null,
+            specifications: data.specifications || {},
             price: data.price,
             stock: data.stock,
             imageUrl: data.imageUrl || null,
