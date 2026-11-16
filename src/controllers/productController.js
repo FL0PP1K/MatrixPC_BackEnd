@@ -33,6 +33,7 @@ function validateProduct(data, required = false) {
         "slug",
         "sku",
         "description",
+        "specifications",
         "price",
         "stock",
         "imageUrl",
@@ -96,6 +97,30 @@ function validateProduct(data, required = false) {
         }
 
         result.price = price;
+    }
+
+    if (data.specifications !== undefined) {
+        if (data.specifications === null) {
+            result.specifications = {};
+        } else if (typeof data.specifications !== "object" || Array.isArray(data.specifications)) {
+            throw new Error("Характеристики мають бути у форматі назва та значення");
+        } else {
+            const entries = Object.entries(data.specifications);
+            if (entries.length > 30) {
+                throw new Error("Можна вказати не більше 30 характеристик");
+            }
+
+            const specifications = {};
+            for (const [rawName, rawValue] of entries) {
+                const name = typeof rawName === "string" ? rawName.trim() : "";
+                const value = typeof rawValue === "string" ? rawValue.trim() : "";
+                if (!name || !value || name.length > 80 || value.length > 300) {
+                    throw new Error("Перевір назву та значення характеристик");
+                }
+                specifications[name] = value;
+            }
+            result.specifications = specifications;
+        }
     }
 
     if (data.stock !== undefined) {
